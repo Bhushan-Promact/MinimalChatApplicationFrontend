@@ -12,8 +12,9 @@ import { MessageDto } from '../Dto/messageDto.model';
 })
 export class UtilityService {
 
+  baseUrl = "http://localhost:5012/";
+
   constructor(private http: HttpClient) { }
-  baseUrl = "http://localhost:5012/"
 
   getUsersAsync(): Observable<ResUserRegistrationDto> {
     let headers = new HttpHeaders().
@@ -29,23 +30,30 @@ export class UtilityService {
   }
 
   postMessageAsync(messageDto: MessageDto) {
-    return this.http.post(this.baseUrl + "messages", messageDto);
+    let headers = new HttpHeaders().
+      set("Authorization", `bearer ${localStorage.getItem('token')}`);
+    return this.http.post(this.baseUrl + "messages", messageDto, { headers });
   }
 
   updateMessageAsync(messageDto: EditMessageDto) {
-    return this.http.put(this.baseUrl + "messages/id", messageDto);
-  }
-
-  //Edit this with query params
-  // deleteMessageAsync(id: string) {
-  //   let headers = new HttpHeaders().
-  //     set("Authorization", `bearer ${localStorage.getItem('token')}`);
-  //   return this.http.delete(this.baseUrl + "messages/id", id, { headers });
-  // }
-
-  getUserConversationHistory() {
     let headers = new HttpHeaders().
       set("Authorization", `bearer ${localStorage.getItem('token')}`);
-    return this.http.get(this.baseUrl + "messages/id", { headers })
+    return this.http.put(this.baseUrl + "messages/id", messageDto, { headers });
+  }
+
+  deleteMessageAsync(id: string) {
+    let headers = new HttpHeaders().
+      set("Authorization", `bearer ${localStorage.getItem('token')}`)
+    return this.http.delete(this.baseUrl + "messages/id", { headers });
+  }
+
+  getUserConversationHistory(user: any) {
+    let headers = new HttpHeaders().
+      set("Authorization", `bearer ${localStorage.getItem('token')}`)
+    return this.http.get(this.baseUrl + "conversations/" + user, { headers })
+  }
+
+  getUserId(){
+    return localStorage.getItem('userId');
   }
 }

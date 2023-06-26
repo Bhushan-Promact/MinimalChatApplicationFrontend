@@ -1,4 +1,4 @@
 export interface MessageDto {
-  ReceiverId: string;
+  ReceiverId: string | null;
   TextMessage: string;
 }

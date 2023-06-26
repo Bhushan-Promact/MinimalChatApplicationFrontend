@@ -12,7 +12,7 @@ const routes: Routes = [
       { path: 'login', component: LoginComponent },
       {
         path: 'dashboard', component: UserDashboardComponent, children: [
-          { path: 'chat', component: UserMessagesComponent }
+          { path: 'conversations/:userId', component: UserMessagesComponent }
         ]
       },
       { path: 'register', component: UserRegistrationComponent },

@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UtilityService } from 'src/app/service/utility.service';
 
@@ -11,12 +11,14 @@ import { UtilityService } from 'src/app/service/utility.service';
 })
 export class UserDashboardComponent {
 
+  userMessageList: any;
   userList: any;
 
   constructor(
     private _toastr: ToastrService,
     private _utility: UtilityService,
-    private _router: Router) { }
+    private _router: Router,
+    private activedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.getUserList();
@@ -24,20 +26,27 @@ export class UserDashboardComponent {
 
   getUserList() {
     this._utility.getUsersAsync().subscribe(
-      (data) => { this.userList = data; },
+      (data) => {
+        this.userList = data;
+      },
       (error: HttpErrorResponse) => {
         this._toastr.error(error.status.toString());
       }
     )
   }
 
-  getUserConversationHistory(user:any){
-    this._utility.getUserConversationHistory().subscribe(
-      (data) => { this.userList = data; },
+  getUserConversationHistory(user: any) {
+
+    localStorage.setItem('receiverId',user.userId);
+    this._utility.getUserConversationHistory(user.userId).subscribe(
+      (data: any) => {
+        this.userMessageList = data;
+      },
       (error: HttpErrorResponse) => {
         this._toastr.error(error.status.toString());
+        this.userMessageList=null;
       }
     );
   }
-
 }
+

@@ -1,1 +1,34 @@
-<p>user-messages works!</p>
+<div class="container mt-5">
+  <div class="row mb-5">
+    <table>
+      <tbody>
+        <tr *ngFor="let user of userMessageList; let i = index">
+          <td
+            class="bg-info border rounded border-primary"
+            [ngClass]="user.senderId === myUserId ? 'float-end' : 'float-start'"
+          >
+            {{ user.textMessage }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <form [formGroup]="messageForm">
+      <div class="mb-3 row">
+        <div class="col-sm-9">
+          <input
+            type="text"
+            formControlName="TextMessage"
+            class="form-control"
+          />
+        </div>
+        <div class="col-sm-3">
+          <button (click)="OnSubmit()" type="button" class="btn btn-success">
+            Send
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

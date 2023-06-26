@@ -1,13 +1,19 @@
-<div class="container">
+<div class="container mt-5">
   <div class="row">
     <div class="col-3">
+      <h3>List of User</h3>
       <div class="container">
         <div class="row">
           <table>
             <tbody>
               <tr *ngFor="let user of userList">
-                <td class="bg-dark">
-                  <a class="text-secondary text-center" (click)="user">{{ user.name }}</a>
+                <td>
+                  <a
+                    class="text-secondary text-center text-decoration-none"
+                    routerLinkActive="active-link"
+                    (click)="getUserConversationHistory(user)"
+                    >{{ user.name }}</a
+                  >
                 </td>
               </tr>
             </tbody>
@@ -15,6 +21,10 @@
         </div>
       </div>
     </div>
-    <div class="col-9"><router-outlet></router-outlet></div>
+    <div class="col-9">
+      <app-user-messages
+        [userMessageList]="userMessageList"
+      ></app-user-messages>
+    </div>
   </div>
 </div>
