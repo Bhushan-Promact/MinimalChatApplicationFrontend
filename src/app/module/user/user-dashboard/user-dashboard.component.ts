@@ -36,17 +36,22 @@ export class UserDashboardComponent {
   }
 
   getUserConversationHistory(user: any) {
-
-    localStorage.setItem('receiverId',user.userId);
+    localStorage.setItem('receiverId', user.userId);
     this._utility.getUserConversationHistory(user.userId).subscribe(
       (data: any) => {
         this.userMessageList = data;
       },
       (error: HttpErrorResponse) => {
         this._toastr.error(error.status.toString());
-        this.userMessageList=null;
+        this.userMessageList = null;
       }
     );
+  }
+
+  OnClickLogout() {
+    localStorage.clear();
+    this._router.navigateByUrl('login');
+    this._toastr.success("Logged Out Successfully")
   }
 }
 

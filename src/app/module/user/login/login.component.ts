@@ -37,10 +37,6 @@ export class LoginComponent {
       else {
         localStorage.setItem('token', data.token);
         localStorage.setItem('userId', data.user.userId);
-        localStorage.setItem('name', data.user.name);
-        localStorage.setItem('email', data.user.email);
-        //console.log(data);
-
         this._router.navigateByUrl('dashboard');
       }
     },

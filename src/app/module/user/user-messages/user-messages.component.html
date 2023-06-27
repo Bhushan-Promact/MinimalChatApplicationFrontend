@@ -1,20 +1,66 @@
 <div class="container mt-5">
-  <div class="row mb-5">
+  <div class="row mt-5">
     <table>
       <tbody>
         <tr *ngFor="let user of userMessageList; let i = index">
           <td
-            class="bg-info border rounded border-primary"
+            class="p-2"
             [ngClass]="user.senderId === myUserId ? 'float-end' : 'float-start'"
           >
-            {{ user.textMessage }}
+            <div>
+              <span
+                (click)="OnMessageClick(user)"
+                class="bg-info border rounded border-primary p-1 text-nowrap"
+                >{{ user.textMessage }}</span
+              ><br /><sub>{{ user.timeStamp }}</sub>
+            </div>
           </td>
         </tr>
+        <div>
+          <form *ngIf="isUpdateGroup" [formGroup]="updateMessageForm">
+            <div class="mb-3 row">
+              <div class="col-sm-6">
+                <input
+                  type="text"
+                  formControlName="TextMessage"
+                  class="form-control"
+                />
+              </div>
+              <div class="col-sm-2">
+                <button
+                  (click)="OnUpdateMessage()"
+                  type="button"
+                  class="btn btn-primary"
+                >
+                  Update
+                </button>
+              </div>
+              <div class="col-sm-2">
+                <button
+                  (click)="OnDeleteMessage()"
+                  type="button"
+                  class="btn btn-danger"
+                >
+                  Delete
+                </button>
+              </div>
+              <div class="col-sm-2">
+                <button
+                  (click)="resetGroup()"
+                  type="button"
+                  class="btn btn-info"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
       </tbody>
     </table>
   </div>
   <div>
-    <form [formGroup]="messageForm">
+    <form *ngIf="isMessageGroup" [formGroup]="messageForm">
       <div class="mb-3 row">
         <div class="col-sm-9">
           <input

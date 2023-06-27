@@ -38,13 +38,14 @@ export class UtilityService {
   updateMessageAsync(messageDto: EditMessageDto) {
     let headers = new HttpHeaders().
       set("Authorization", `bearer ${localStorage.getItem('token')}`);
-    return this.http.put(this.baseUrl + "messages/id", messageDto, { headers });
+    let testMesage = messageDto.TextMessage;
+    return this.http.put(this.baseUrl + "messages/" + messageDto.MessageId + "?testMesage=" + testMesage, {}, { headers });
   }
 
   deleteMessageAsync(id: string) {
     let headers = new HttpHeaders().
       set("Authorization", `bearer ${localStorage.getItem('token')}`)
-    return this.http.delete(this.baseUrl + "messages/id", { headers });
+    return this.http.delete(this.baseUrl + "messages/" + id, { headers });
   }
 
   getUserConversationHistory(user: any) {
@@ -53,7 +54,7 @@ export class UtilityService {
     return this.http.get(this.baseUrl + "conversations/" + user, { headers })
   }
 
-  getUserId(){
+  getUserId() {
     return localStorage.getItem('userId');
   }
 }
