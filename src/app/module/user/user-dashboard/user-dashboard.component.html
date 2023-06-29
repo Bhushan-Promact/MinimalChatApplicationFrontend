@@ -11,15 +11,40 @@
       <h3>List of User</h3>
       <div class="container">
         <div class="row">
+          <form [formGroup]="sortingForm">
+            <div class="input-group mb-3">
+              <div class="input-group-text">
+                Before DateTime
+              </div>
+              <input type="date" formControlName="Before" class="form-control" placeholder="dd/mm/yyyy">
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-text">
+                Count
+              </div>
+              <input type="text" formControlName="Count" class="form-control">
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-text">
+                Sort
+              </div>
+              <input type="datetime" formControlName="Sort" class="form-control" placeholder="asc / desc">
+            </div>
+
+            <div>
+              <button (click)="Sorting()" type="button" class="btn btn-danger">
+                Sort
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="row">
           <table>
             <tbody>
               <tr *ngFor="let user of userList">
                 <td class="p-2">
-                  <a
-                    class="text-decoration-none bg-info bg-gradient d-block"
-                    routerLinkActive="active-link"
-                    (click)="getUserConversationHistory(user)"
-                    ><Span class="NameSize">{{ user.name }}</Span> <br />
+                  <a class="text-decoration-none bg-info bg-gradient d-block" routerLinkActive="active-link"
+                    (click)="getUserConversationHistory(user)"><Span class="NameSize">{{ user.name }}</Span> <br />
                     <span class="EmailSize">Email : {{ user.email }}</span>
                   </a>
                 </td>
@@ -30,9 +55,7 @@
       </div>
     </div>
     <div class="col-8">
-      <app-user-messages
-        [userMessageList]="userMessageList"
-      ></app-user-messages>
+      <app-user-messages [userMessageList]="userMessageList"></app-user-messages>
     </div>
   </div>
 </div>

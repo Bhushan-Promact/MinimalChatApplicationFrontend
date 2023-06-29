@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UtilityService } from 'src/app/service/utility.service';
 
@@ -13,7 +14,11 @@ export class UserRegistrationComponent {
   registerFormGroup: any;
   formData: any;
 
-  constructor(private fb: FormBuilder, private _toastr: ToastrService, private _utility: UtilityService) { }
+  constructor(private fb: FormBuilder,
+    private _toastr: ToastrService,
+    private _router: Router,
+    private _utility: UtilityService) { }
+
   ngOnInit(): void {
     this.onLoadFormInIt();
   }
@@ -28,18 +33,20 @@ export class UserRegistrationComponent {
 
   OnSubmit() {
     this.formData = this.registerFormGroup.value;
-    this._utility.registerUsersAsync(this.formData).subscribe((data: any) => {
-      if (data == null) {
-        throw 'Empty response';
-      }
-      else {
-        console.log(data);
-      }
+    this._utility.registerUsersAsync(this.formData).subscribe((res) => {
+      this.resetForm();
+      this._toastr.success("User Registered Successfully")
+      this._router.navigate(['login']);
     },
       (error: HttpErrorResponse) => {
-        this._toastr.error(error.status.toString());
+        this._toastr.error(error.error.message);
       }
     );
   }
 
+  resetForm() {
+    this.registerFormGroup.controls['Name'].setValue("");
+    this.registerFormGroup.controls['Email'].setValue("");
+    this.registerFormGroup.controls['Password'].setValue("");
+  }
 }

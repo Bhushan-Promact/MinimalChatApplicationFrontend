@@ -9,6 +9,7 @@ import { UtilityService } from 'src/app/service/utility.service';
   templateUrl: './user-messages.component.html',
   styleUrls: ['./user-messages.component.scss']
 })
+
 export class UserMessagesComponent {
   myUserId: any = "";
   messageForm: any;
@@ -17,6 +18,8 @@ export class UserMessagesComponent {
   isUpdateGroup: boolean = false;
   messageId: any;
   @Input() userMessageList: any;
+
+  sorting: any;
 
   constructor(private _utility: UtilityService,
     private _toastr: ToastrService,
@@ -27,6 +30,10 @@ export class UserMessagesComponent {
     this.myUserId = this._utility.getUserId()?.toString();
     this.onLoadFormInIt();
     this.resetGroup();
+    this._utility.sorting.subscribe((res) => {
+      this.sorting = res;
+      this.updateHistory();
+    })
   }
 
   onLoadFormInIt() {
@@ -46,11 +53,13 @@ export class UserMessagesComponent {
     }
     this._utility.postMessageAsync(obj).subscribe(
       (res) => {
-        this._utility.getUserConversationHistory(receiverId).subscribe(
-          (res) => { this.userMessageList = res; this.messageForm.reset(); });
+        this.resetGroup();
+        this.updateHistory();
       },
       (error) => {
-        this._toastr.error(error.status.toString());
+        this._toastr.error(error.status.toString(), error.error.messages);
+        this.resetGroup();
+        this.updateHistory();
       }
     );
   }
@@ -81,10 +90,14 @@ export class UserMessagesComponent {
     if (result) {
       this._utility.updateMessageAsync(obj).subscribe(
         (res) => {
-          this._utility.getUserConversationHistory(receiverId).subscribe(
-            (res) => { this.userMessageList = res; this.messageForm.reset(); });
           this._toastr.success("Message Updated")
           this.resetGroup();
+          this.updateHistory();
+        },
+        (error) => {
+          this._toastr.error(error.status.toString(), error.error.messages);
+          this.resetGroup();
+          this.updateHistory();
         }
       );
     }
@@ -92,14 +105,29 @@ export class UserMessagesComponent {
 
   OnDeleteMessage() {
     let result = confirm("Want to delete?");
-    let receiverId = localStorage.getItem('receiverId')!.toString();
     if (result) {
       this._utility.deleteMessageAsync(this.messageId).subscribe(
-        (res) => { this._toastr.success("Message Deleted") })
-      this._utility.getUserConversationHistory(receiverId).subscribe(
-        (res) => { this.userMessageList = res; this.messageForm.reset(); });
-      this.resetGroup();
+        (res: any) => {
+          this.resetGroup();
+          this.updateHistory();
+          console.log(res.error.message);
+        },
+        (error) => {
+          this.resetGroup();
+          this.updateHistory();
+          console.error(error.error.messages);
+        }
+      );
     }
+  }
+
+  updateHistory() {
+    let receiverId = localStorage.getItem('receiverId')!.toString();
+    this._utility.getUserConversationHistory(receiverId, this.sorting).subscribe(
+      (res) => { this.userMessageList = res; this.messageForm.reset(); console.log(res);
+       },
+      (error) => { this._toastr.error(error.status.toString(), error.error.messages); }
+    );
   }
 
   resetGroup() {

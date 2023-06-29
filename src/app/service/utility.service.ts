@@ -1,11 +1,12 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { UserLoginDto } from '../Dto/userLoginDto.model';
 import { ResUserRegistrationDto } from '../Dto/resUserRegistrationDto.model';
 import { EditMessageDto } from '../Dto/editMessageDto.model';
 import { UserRegistrationDto } from '../Dto/userRegistrationDto.model';
 import { MessageDto } from '../Dto/messageDto.model';
+import { SortingDto } from '../Dto/sortingDto.Model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ import { MessageDto } from '../Dto/messageDto.model';
 export class UtilityService {
 
   baseUrl = "http://localhost:5012/";
+  sorting = new Subject();
 
   constructor(private http: HttpClient) { }
 
@@ -48,12 +50,13 @@ export class UtilityService {
     return this.http.delete(this.baseUrl + "messages/" + id, { headers });
   }
 
-  getUserConversationHistory(user: any) {
+  getUserConversationHistory(user: any, sortMessage: any) {
     let headers = new HttpHeaders().
       set("Authorization", `bearer ${localStorage.getItem('token')}`)
-    return this.http.get(this.baseUrl + "conversations/" + user, { headers })
+    return this.http.get(`${this.baseUrl}conversations/${user}?Before=${sortMessage.Before}
+    &Count=${sortMessage.Count} &Sort=${sortMessage.Sort}`, { headers })
   }
-
+  //(this.baseUrl + "conversations/" + user + "?Before", { headers })
   getUserId() {
     return localStorage.getItem('userId');
   }
